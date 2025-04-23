@@ -220,7 +220,7 @@ def gby_plot_exons(
     # get introns
     df[START_COL] = df[START_COL].astype(int)
     df[END_COL] = df[END_COL].astype(int)
-    introns = df.complement(transcript_id=id_col)
+    introns = df.complement(match_by=id_col)
     introns["intron_dir_flag"] = [0] * len(introns)
 
     # consider shrunk

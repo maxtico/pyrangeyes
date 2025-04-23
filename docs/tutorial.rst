@@ -817,6 +817,8 @@ the pyranges plot dash object and then you can create a pie chart to display the
 integrate it into the PyRanges Plot layout. Below is an example of a PyRanges Plot combined with a horizontally aligned pie chart:
 
 .. code-block::
+    
+    from dash import Dash, html, dcc
 
     p = prp.plot([reg,coord_vcf],id_col='ID',text = '{Text_col}', return_plot='app')
 
@@ -871,6 +873,8 @@ This layout can also be implemented vertically, allowing you to stack the PyRang
 visualization. Here's how you can achieve this configuration:
 
 .. code-block::
+
+    from dash import Dash, html, dcc
 
     p = prp.plot([reg,p_vcf[0]],id_col='ID',text = '{Artificial_col}', return_plot='app')
 
