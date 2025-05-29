@@ -817,6 +817,8 @@ the pyranges plot dash object and then you can create a pie chart to display the
 integrate it into the PyRanges Plot layout. Below is an example of a PyRanges Plot combined with a horizontally aligned pie chart:
 
 .. code-block::
+    
+    from dash import Dash, html, dcc
 
     from dash import Dash, html, dcc
 
