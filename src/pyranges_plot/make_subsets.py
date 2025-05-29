@@ -1,4 +1,6 @@
 import plotly.graph_objects as go
+import pyranges_plot as prp
+import matplotlib.pyplot as plt
 
 
 def make_scatter(
@@ -12,6 +14,7 @@ def make_scatter(
     title_color: str | None = None,
     height: int | None = None,
     y_space: int | None = None,
+    engine: str | None = None,
 ):
     """
     Create a Scatter plot from a Pyranges object using Plotly.
@@ -90,6 +93,11 @@ def make_scatter(
             "The parameter 'y' is required and must be a str to run this function."
         )
 
+    if not engine:
+        raise ValueError(
+            "The parameter 'engine' is required and must be either plt or ply to run this function."
+        )
+
     # Validate the x column
     if x not in p.columns:
         raise ValueError(f"The column '{x}' does not exist in the DataFrame.")
@@ -129,17 +137,29 @@ def make_scatter(
         size_values = 8  # Default marker size
 
     # Create a scatter plot
-    scatter = go.Scatter(
-        x=p[x],  # X-axis: Start positions                 #### x
-        y=p[y],  # Y-axis: Counts of transcripts           #### y or __count__
-        mode="markers",  # Display points as markers
-        marker=dict(
-            size=size_values,
-            color=color_values,  # Assign color values
-            colorscale="Viridis" if color_by else None,  # Use a colormap if coloring
-        ),
-        hovertemplate="<b>Position:</b> %{x}<br><b>Count:</b> %{y}<extra></extra>",
-    )
+    if engine=='ply':
+        scatter = go.Scatter(
+            x=p[x],  # X-axis: Start positions                 #### x
+            y=p[y],  # Y-axis: Counts of transcripts           #### y or __count__
+            mode="markers",  # Display points as markers
+            marker=dict(
+                size=size_values,
+                color=color_values,  # Assign color values
+                colorscale="Viridis" if color_by else None,  # Use a colormap if coloring
+            ),
+            hovertemplate="<b>Position:</b> %{x}<br><b>Count:</b> %{y}<extra></extra>",
+        )
+    else:
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.scatter(
+            x=p[x],
+            y=p[y],
+            s=size_values,  # Marker sizes
+            c=color_values,  # Marker colors
+            cmap="viridis" if color_by else None,  # Colormap if coloring
+        )
+        scatter = ax
+        plt.close(fig)
 
     custom = {"title": title if title else y}
     # Defining optional parameters for customisation

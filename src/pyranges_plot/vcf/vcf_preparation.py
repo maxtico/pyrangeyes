@@ -40,8 +40,8 @@ def split_fields(
 
     Returns
     -------
-        pd.DataFrame:
-            A DataFrame with the new columns added (and the target columns removed if `keep_col` is False).
+        Pyranges:
+            A Pyranges object with the new columns added (and the target columns removed if `keep_col` is False).
 
     Raises
     ------

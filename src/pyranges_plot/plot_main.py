@@ -543,42 +543,44 @@ def plot(
     if tooltip is None:
         tooltip = "{__tooltip__}"
 
+    if return_plot is not None:
     # deal with engine and call proper plot
-    if engine in ["plt", "matplotlib"]:
-        if not missing_plt_flag:
-            plot_exons_plt(
-                subdf=subdf,
-                depth_col=depth_col,
-                tot_ngenes_l=tot_ngenes_l,
-                feat_dict=feat_dict,
-                genesmd_df=genesmd_df,
-                chrmd_df=chrmd_df,
-                chrmd_df_grouped=chrmd_df_grouped,
-                ts_data=ts_data,
-                max_shown=max_shown,
-                id_col=ID_COL,
-                transcript_str=thick_cds,
-                tooltip=tooltip,
-                legend=legend,
-                y_labels=y_labels,
-                text=text,
-                title_chr=title_chr,
-                packed=packed,
-                to_file=to_file,
-                file_size=file_size,
-                warnings=warnings,
-                tick_pos_d=tick_pos_d,
-                ori_tick_pos_d=ori_tick_pos_d,
-            )
+        if engine in ["plt", "matplotlib"]:
+            if not missing_plt_flag:
+                return plot_exons_plt(
+                    subdf=subdf,
+                    depth_col=depth_col,
+                    tot_ngenes_l=tot_ngenes_l,
+                    feat_dict=feat_dict,
+                    genesmd_df=genesmd_df,
+                    chrmd_df=chrmd_df,
+                    chrmd_df_grouped=chrmd_df_grouped,
+                    ts_data=ts_data,
+                    max_shown=max_shown,
+                    id_col=ID_COL,
+                    transcript_str=thick_cds,
+                    tooltip=tooltip,
+                    legend=legend,
+                    return_plot=return_plot,
+                    add_aligned_plots=add_aligned_plots,
+                    y_labels=y_labels,
+                    text=text,
+                    title_chr=title_chr,
+                    packed=packed,
+                    to_file=to_file,
+                    file_size=file_size,
+                    warnings=warnings,
+                    tick_pos_d=tick_pos_d,
+                    ori_tick_pos_d=ori_tick_pos_d,
+                )
 
-        else:
-            raise Exception(
-                "Make sure to install matplotlib dependecies by running `pip install pyranges-plot[plt]`"
-            )
+            else:
+                raise Exception(
+                    "Make sure to install matplotlib dependecies by running `pip install pyranges-plot[plt]`"
+                )
 
-    elif engine in ["ply", "plotly"]:
-        if not missing_ply_flag:
-            if return_plot is not None:
+        elif engine in ["ply", "plotly"]:
+            if not missing_ply_flag:
                 return plot_exons_ply(
                     subdf=subdf,
                     depth_col=depth_col,
@@ -604,8 +606,49 @@ def plot(
                     tick_pos_d=tick_pos_d,
                     ori_tick_pos_d=ori_tick_pos_d,
                     subset_warn=subset_warn,
+                    )
+            else:
+                raise Exception(
+                    "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"
+                )
+
+        else:
+            raise Exception("Please define engine with set_engine().")
+    else:
+        if engine in ["plt", "matplotlib"]:
+            if not missing_plt_flag:
+                plot_exons_plt(
+                    subdf=subdf,
+                    depth_col=depth_col,
+                    tot_ngenes_l=tot_ngenes_l,
+                    feat_dict=feat_dict,
+                    genesmd_df=genesmd_df,
+                    chrmd_df=chrmd_df,
+                    chrmd_df_grouped=chrmd_df_grouped,
+                    ts_data=ts_data,
+                    max_shown=max_shown,
+                    id_col=ID_COL,
+                    transcript_str=thick_cds,
+                    tooltip=tooltip,
+                    legend=legend,
+                    return_plot=return_plot,
+                    add_aligned_plots=add_aligned_plots,
+                    y_labels=y_labels,
+                    text=text,
+                    title_chr=title_chr,
+                    packed=packed,
+                    to_file=to_file,
+                    file_size=file_size,
+                    warnings=warnings,
+                    tick_pos_d=tick_pos_d,
+                    ori_tick_pos_d=ori_tick_pos_d,
                 )
             else:
+                raise Exception(
+                    "Make sure to install matplotlib dependecies by running `pip install pyranges-plot[plt]`"
+                )
+        elif engine in ["ply", "plotly"]:
+            if not missing_ply_flag:
                 plot_exons_ply(
                     subdf=subdf,
                     depth_col=depth_col,
@@ -632,10 +675,9 @@ def plot(
                     ori_tick_pos_d=ori_tick_pos_d,
                     subset_warn=subset_warn,
                 )
+            else:
+                raise Exception(
+                    "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"
+                )
         else:
-            raise Exception(
-                "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"
-            )
-
-    else:
-        raise Exception("Please define engine with set_engine().")
+            raise Exception("Please define engine with set_engine().")
