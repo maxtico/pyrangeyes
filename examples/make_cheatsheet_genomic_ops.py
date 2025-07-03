@@ -3,17 +3,18 @@ import pyranges_plot as prp
 import matplotlib.pyplot as plt
 
 # based on ggsci npg, with some modifications
-colors={'red': "#DC0000",
-        'redish': "#E64B35",
-        'pink': "#F39B7F",
-        'green': "#00A087",
-        'greenish': "#91D1C2",
-        'blue': "#3C5488",
-        'blueish': "#8491B4",
-        'azure': "#4DBBD5",
-        'brown': "#7E6148",
-        'brownish': "#B09C85",
-        }
+colors = {
+    "red": "#DC0000",
+    "redish": "#E64B35",
+    "pink": "#F39B7F",
+    "green": "#00A087",
+    "greenish": "#91D1C2",
+    "blue": "#3C5488",
+    "blueish": "#8491B4",
+    "azure": "#4DBBD5",
+    "brown": "#7E6148",
+    "brownish": "#B09C85",
+}
 
 
 colormap = {
@@ -55,8 +56,8 @@ for i in [r_ext, r_ext_id, r_ext_id_out, r_ext_id_out_clip]:
 b = r.outer_ranges("transcript_id")
 b["transcript_id"] = ["r.outer_ranges(id)"] * len(b)
 b["to_color"] = ["a2"] * len(b)
-#b_subseq = b.subsequence(0, 10)
-#b_subseq["transcript_id"] = ["r.boundaries().subsequence(0,10)"] * len(b_subseq)
+# b_subseq = b.subsequence(0, 10)
+# b_subseq["transcript_id"] = ["r.boundaries().subsequence(0,10)"] * len(b_subseq)
 
 # upstream, downstream
 r_upstream = r.upstream(2, group_by="transcript_id")
@@ -73,16 +74,14 @@ r_complement["to_color"] = ["a2"] * len(r_complement)
 
 
 # subsequence
-#g_subseq_id = r.subsequence(0, 10, "transcript_id")
-#g_subseq_id["transcript_id"] = ["r.subsequence(0,10,id)"] * len(g_subseq_id)
-#g_subseq = r.subsequence(0, 3)
-#g_subseq["transcript_id"] = ["r.subsequence(0,3)"] * len(g_subseq)
+# g_subseq_id = r.subsequence(0, 10, "transcript_id")
+# g_subseq_id["transcript_id"] = ["r.subsequence(0,10,id)"] * len(g_subseq_id)
+# g_subseq = r.subsequence(0, 3)
+# g_subseq["transcript_id"] = ["r.subsequence(0,3)"] * len(g_subseq)
 
 # spliced subsequence
 r_spl_subseq_for = r.slice_ranges(0, 8, "transcript_id")
-r_spl_subseq_for["transcript_id"] = ["r.slice_ranges(0,8,id)"] * len(
-    r_spl_subseq_for
-)
+r_spl_subseq_for["transcript_id"] = ["r.slice_ranges(0,8,id)"] * len(r_spl_subseq_for)
 r_spl_subseq_for2 = r.slice_ranges(3, None, "transcript_id")
 r_spl_subseq_for2["transcript_id"] = ["r.slice_ranges(3,None,id)"] * len(
     r_spl_subseq_for2
@@ -90,14 +89,10 @@ r_spl_subseq_for2["transcript_id"] = ["r.slice_ranges(3,None,id)"] * len(
 
 
 r_spl_subseq_rev = r.slice_ranges(-5, -1, "transcript_id")
-r_spl_subseq_rev["transcript_id"] = ["r.slice_ranges(-5,-1,id)"] * len(
-    r_spl_subseq_rev
-)
+r_spl_subseq_rev["transcript_id"] = ["r.slice_ranges(-5,-1,id)"] * len(r_spl_subseq_rev)
 
 r_spl_subseq_noid = r.slice_ranges(0, 3)
-r_spl_subseq_noid["transcript_id"] = ["r.slice_ranges(0,3)"] * len(
-    r_spl_subseq_noid
-)
+r_spl_subseq_noid["transcript_id"] = ["r.slice_ranges(0,3)"] * len(r_spl_subseq_noid)
 
 # colors for slices
 for i in [
@@ -134,21 +129,22 @@ ori_margin = plt.rcParams["figure.subplot.left"]
 plt.rcParams["figure.subplot.left"] = 0.4
 
 
-
-
-for ext in ['png']: #, 'pdf']:
+for ext in ["png"]:  # , 'pdf']:
     prp.plot(
         [
             r,
-            pr.concat([b, r_upstream, r_downstream, r_complement]).reset_index(drop=True),
-            pr.concat([r_ext_id, r_ext_id_out, r_ext_id_out_clip]).reset_index(drop=True),
-
-            #pr.concat([g_subseq_id, g_subseq, ]),
-            pr.concat([r_spl_subseq_for, r_spl_subseq_for2, r_spl_subseq_rev]).reset_index(drop=True),
-            #pr.concat([r_ext, r_spl_subseq_noid]).reset_index(drop=True),
-
-            pr.concat([g_window,tile_g, g_tile]).reset_index(drop=True),
-
+            pr.concat([b, r_upstream, r_downstream, r_complement]).reset_index(
+                drop=True
+            ),
+            pr.concat([r_ext_id, r_ext_id_out, r_ext_id_out_clip]).reset_index(
+                drop=True
+            ),
+            # pr.concat([g_subseq_id, g_subseq, ]),
+            pr.concat(
+                [r_spl_subseq_for, r_spl_subseq_for2, r_spl_subseq_rev]
+            ).reset_index(drop=True),
+            # pr.concat([r_ext, r_spl_subseq_noid]).reset_index(drop=True),
+            pr.concat([g_window, tile_g, g_tile]).reset_index(drop=True),
         ],
         packed=False,
         text=False,
@@ -163,7 +159,6 @@ for ext in ['png']: #, 'pdf']:
         to_file=(f"cheatsheet_genomic_ops.{ext}", (700, 350)),
         colormap=colormap,
     )
-
 
 
 # reset rcparams

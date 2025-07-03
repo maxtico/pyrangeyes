@@ -3,24 +3,25 @@ import pyranges_plot as prp
 import matplotlib.pyplot as plt
 
 # based on ggsci npg, with some modifications
-colors={'red': "#DC0000",
-        'redish': "#E64B35",
-        'pink': "#F39B7F",
-        'green': "#00A087",
-        'greenish': "#91D1C2",
-        'blue': "#3C5488",
-        'blueish': "#8491B4",
-        'azure': "#4DBBD5",
-        'brown': "#7E6148",
-        'brownish': "#B09C85",
-        }
-colormap = {'xa': colors['redish'],
-            'a': colors['redish'],
-            'a2': colors['brownish'],
-            'xb': colors['blueish'],
-            'o': colors['greenish'],
-
-            }
+colors = {
+    "red": "#DC0000",
+    "redish": "#E64B35",
+    "pink": "#F39B7F",
+    "green": "#00A087",
+    "greenish": "#91D1C2",
+    "blue": "#3C5488",
+    "blueish": "#8491B4",
+    "azure": "#4DBBD5",
+    "brown": "#7E6148",
+    "brownish": "#B09C85",
+}
+colormap = {
+    "xa": colors["redish"],
+    "a": colors["redish"],
+    "a2": colors["brownish"],
+    "xb": colors["blueish"],
+    "o": colors["greenish"],
+}
 
 
 # Load data
@@ -92,7 +93,7 @@ a_cluster["text"] = a_cluster["Cluster"]
 
 # concatenate
 a_concat_b = pr.concat([a, b])
-#a_concat_b["to_color"] = ["concat"] * len(a_concat_b)
+# a_concat_b["to_color"] = ["concat"] * len(a_concat_b)
 
 
 ######
@@ -103,35 +104,34 @@ prp.set_engine("plt")
 ori_margin = plt.rcParams["figure.subplot.left"]
 plt.rcParams["figure.subplot.left"] = 0.4
 
-data=    [
-        a,
-        a_merge,
-        a_split,
-        a_max_disjoint,
-        a_cluster,
-        b,
-        a_ov_b,
-        a_ov_b_nostrand,
-        a_ov_b_opstrand,
-        a_ov_b_slack,
-        a_count_b,
-        a_inters_b,
-        a_setinters_b,
-        a_union_b,
-        a_subt_b,
-        a_concat_b
-    ]
+data = [
+    a,
+    a_merge,
+    a_split,
+    a_max_disjoint,
+    a_cluster,
+    b,
+    a_ov_b,
+    a_ov_b_nostrand,
+    a_ov_b_opstrand,
+    a_ov_b_slack,
+    a_count_b,
+    a_inters_b,
+    a_setinters_b,
+    a_union_b,
+    a_subt_b,
+    a_concat_b,
+]
 
 for i, x in enumerate(data):
-    if not 'text' in x.columns:
+    if not "text" in x.columns:
         x["text"] = ""
     # overriding color
     ## x["to_color"] = str(i)
 
-for ext in ['png']: #, 'pdf']:
+for ext in ["png"]:  # , 'pdf']:
     prp.plot(
         data=data,
-
         y_labels=[
             "a",
             "a.merge_overlaps()",
@@ -148,11 +148,11 @@ for ext in ['png']: #, 'pdf']:
             "a.set_intersect_overlaps(b)",
             "a.set_union_overlaps(b)",
             "a.subtract_overlaps(b)",
-            "pyranges.concat([a, b])"
+            "pyranges.concat([a, b])",
         ],
         title_chr=" ",
         warnings=False,
-        text='{text}',
+        text="{text}",
         text_size=8,
         to_file=(f"cheatsheet_overlap.{ext}", (700, 800)),
         color_col="to_color",

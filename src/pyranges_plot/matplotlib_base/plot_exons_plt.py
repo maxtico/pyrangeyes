@@ -108,7 +108,7 @@ def plot_exons_plt(
     )
 
     # Plot genes
-    #pd.DataFrame.groupby(subdf,
+    # pd.DataFrame.groupby(subdf,
     subdf.groupby(
         id_col + [PR_INDEX_COL, CHROM_COL], group_keys=False, observed=True
     ).apply(
