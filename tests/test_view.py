@@ -189,7 +189,7 @@ def test_plot_calls():
         color_col="depth",
         depth_col="depth",
         tooltip="{depth}",
-        theme="Mariotti_lab",
+        theme="pastel",
         to_file="tests/img/test14.png",
     )
     prp.plot(

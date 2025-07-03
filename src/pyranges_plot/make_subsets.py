@@ -24,7 +24,7 @@ def make_scatter(
     ----------
         p: pd.DataFrame
             Input DataFrame containing the genomic data with columns for
-            start and end positions (e.g., 'Start' and 'End').
+            start and end positions (e.r., 'Start' and 'End').
         x: str, optional
             The column name to use for the x-axis. Defaults to 'Start'.
         y: str

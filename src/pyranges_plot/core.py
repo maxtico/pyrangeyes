@@ -126,7 +126,7 @@ def set_theme(name):
     ----------
     name: {str, dict, None}
         Name of the predefined theme or dictionary with defined options to be set as new default.
-        Currently available themes are "dark", "light", "Mariotti_lab" and "swimming_pool".
+        Currently available themes are "dark", "light", "pastel" and "swimming_pool".
 
     Examples
     --------
