@@ -1,4 +1,5 @@
 import os
+import tkinter as tk
 
 if os.environ.get("DISPLAY"):
     try:
