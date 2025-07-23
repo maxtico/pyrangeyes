@@ -455,11 +455,13 @@ def plot(
         elif isinstance(shrink_threshold, float):
             subdf[SHRTHRES_COL] = [shrink_threshold] * len(subdf)
             subdf = subdf.groupby(CHROM_COL, group_keys=False, observed=True).apply(
-                lambda x: compute_thresh(x, chrmd_df_grouped) if not x.empty else None
+                lambda x: compute_thresh(x, chrmd_df_grouped) if not x.empty else None,
+                include_groups=True,
             )
 
         subdf = subdf.groupby(CHROM_COL, group_keys=False, observed=True).apply(
-            lambda x: introns_resize(x, ts_data, ID_COL)  # if not x.empty else None
+            lambda x: introns_resize(x, ts_data, ID_COL),
+            include_groups=True,  # if not x.empty else None
         )  # empty rows when subset
         subdf[START_COL] = subdf[ADJSTART_COL]
         subdf[END_COL] = subdf[ADJEND_COL]
@@ -499,7 +501,8 @@ def plot(
     elif isinstance(text_pad, float):
         subdf[TEXT_PAD_COL] = [text_pad] * len(subdf)
         subdf = subdf.groupby(CHROM_COL, group_keys=False, observed=True).apply(
-            lambda x: compute_tpad(x, chrmd_df_grouped) if not x.empty else None
+            lambda x: compute_tpad(x, chrmd_df_grouped) if not x.empty else None,
+            include_groups=True,
         )
 
     # Deal with added plots
@@ -544,7 +547,7 @@ def plot(
         tooltip = "{__tooltip__}"
 
     if return_plot is not None:
-    # deal with engine and call proper plot
+        # deal with engine and call proper plot
         if engine in ["plt", "matplotlib"]:
             if not missing_plt_flag:
                 return plot_exons_plt(
@@ -606,7 +609,7 @@ def plot(
                     tick_pos_d=tick_pos_d,
                     ori_tick_pos_d=ori_tick_pos_d,
                     subset_warn=subset_warn,
-                    )
+                )
             else:
                 raise Exception(
                     "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"

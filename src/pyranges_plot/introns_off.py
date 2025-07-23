@@ -77,13 +77,13 @@ def introns_resize(df, ts_data, id_col):
     # get flexible introns
     exons = p.copy()
     # introns = get_introns(p, [PR_INDEX_COL] + id_col)
-    introns = p.complement(use_strand=False)
+    introns = p.complement_ranges(use_strand=False)
     introns.reset_index(drop=True, inplace=True)  # reset duplicate labels in index
 
     to_shrink = pr.PyRanges()
 
     if not introns.empty:
-        flex_introns = introns.subtract_ranges(exons, strand_behavior="ignore")
+        flex_introns = introns.subtract_overlaps(exons, strand_behavior="ignore")
 
         # obtain shrinkable regions
         to_shrink = flex_introns.merge_overlaps(use_strand=False)  # unique ranges
@@ -120,10 +120,10 @@ def introns_resize(df, ts_data, id_col):
     to_shrink[CUM_DELTA_COL] = to_shrink[DELTA_COL].cumsum()
 
     # store adjusted coord to plot shrunk intron regions
-    to_shrink[ADJSTART_COL] = to_shrink[
-        START_COL
-    ] - to_shrink.__cumdelta__.shift().fillna(0)
-    to_shrink[ADJEND_COL] = to_shrink[END_COL] - to_shrink.__cumdelta__
+    to_shrink[ADJSTART_COL] = to_shrink[START_COL] - to_shrink[
+        CUM_DELTA_COL
+    ].shift().fillna(0)
+    to_shrink[ADJEND_COL] = to_shrink[END_COL] - to_shrink[CUM_DELTA_COL]
 
     # store to shrink data
     ts_data[chrom] = to_shrink

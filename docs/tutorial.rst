@@ -819,9 +819,7 @@ integrate it into the PyRanges Plot layout. Below is an example of a PyRanges Pl
 .. code-block::
     
     from dash import Dash, html, dcc
-
-    from dash import Dash, html, dcc
-
+    
     p = prp.plot([reg,coord_vcf],id_col='ID',text = '{Text_col}', return_plot='app')
 
     # Example additional data

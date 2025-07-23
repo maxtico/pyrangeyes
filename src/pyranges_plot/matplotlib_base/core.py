@@ -1,4 +1,12 @@
-import tkinter as tk
+import os
+
+if os.environ.get("DISPLAY"):
+    try:
+        import tkinter as tk
+    except ImportError:
+        tk = None
+else:
+    tk = None
 
 
 def coord2percent(ax, X0, X1):

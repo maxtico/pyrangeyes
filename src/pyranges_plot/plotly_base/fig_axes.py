@@ -273,7 +273,7 @@ def create_fig(
                             fillcolor=shrunk_bkg,
                             mode="lines",
                             line={"color": "lightyellow"},
-                            text=f"Shrinked region:\n[{x0+c} - {x1+d}]",
+                            text=f"Shrinked region:\n[{x0 + c} - {x1 + d}]",
                             hoverinfo="text",
                             line_width=0,
                             showlegend=False,

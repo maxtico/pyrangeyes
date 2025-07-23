@@ -156,7 +156,7 @@ def create_fig(
     gs = gridspec.GridSpec(
         total_rows,
         1,
-        height_ratios=chrmd_df_grouped["y_height"].to_list()+row_heights_additional,
+        height_ratios=chrmd_df_grouped["y_height"].to_list() + row_heights_additional,
     )  # size of chromosome subplot according to number of gene rows
 
     # one plot per chromosome
@@ -167,7 +167,9 @@ def create_fig(
             axes.append(plt.subplot(gs[i]))
             ax = axes[i]
             # Adjust plot display
-            ax_display(ax, title_chr, chrom, title_dict_plt, plot_background, plot_border)
+            ax_display(
+                ax, title_chr, chrom, title_dict_plt, plot_background, plot_border
+            )
 
             # set x axis limits
             x_min, x_max = chrmd_df_grouped.loc[chrom]["min_max"]
@@ -188,7 +190,9 @@ def create_fig(
                             x_ticks_val = [
                                 i
                                 for i in np.linspace(
-                                    int(x_ticks_val[0]), int(x_ticks_val[-1]), x_ticks_chrom
+                                    int(x_ticks_val[0]),
+                                    int(x_ticks_val[-1]),
+                                    x_ticks_chrom,
                                 )
                             ]
                             x_ticks_name = x_ticks_val
@@ -230,7 +234,8 @@ def create_fig(
             if tick_pos_d:
                 # get previous default ticks
                 original_ticks = [
-                    int(tick.get_text().replace("−", "-")) for tick in ax.get_xticklabels()
+                    int(tick.get_text().replace("−", "-"))
+                    for tick in ax.get_xticklabels()
                 ]  # [1:]
 
                 # find previous ticks that should be conserved
@@ -323,7 +328,9 @@ def create_fig(
                         # add y_label in the middle of the subplot if needed
                         if y_labels:
                             if pr_line_y_l[j + 1] != 0:
-                                y_ticks_val.append(((pr_line_y) + (pr_line_y_l[j + 1])) / 2)
+                                y_ticks_val.append(
+                                    ((pr_line_y) + (pr_line_y_l[j + 1])) / 2
+                                )
                             else:
                                 y_ticks_val.append((pr_line_y) / 2)
                             y_ticks_name.append(y_labels[int(present_pr_l[j])])
@@ -337,22 +344,27 @@ def create_fig(
             aligned_idx = i - num_main_rows
             original_ax = additional_plots[aligned_idx]
             # Checking if it is a scatterplot
-            if original_ax.collections and isinstance(original_ax.collections[0], mpl.collections.PathCollection):
-                    scatter = original_ax.collections[0]  # Extract the scatter PathCollection
-                    # Recreate scatter plot in the new Axes
-                    ax.scatter(
-                        scatter.get_offsets()[:, 0].data,  # X data
-                        scatter.get_offsets()[:, 1].data,  # Y data
-                        c=scatter.get_facecolor(),    # Colors
-                        s=scatter.get_sizes(),        # Marker sizes
-                    )
-                    ax_limits(ax, x_min, x_max, x_rang, grid_color)
+            if original_ax.collections and isinstance(
+                original_ax.collections[0], mpl.collections.PathCollection
+            ):
+                scatter = original_ax.collections[
+                    0
+                ]  # Extract the scatter PathCollection
+                # Recreate scatter plot in the new Axes
+                ax.scatter(
+                    scatter.get_offsets()[:, 0].data,  # X data
+                    scatter.get_offsets()[:, 1].data,  # Y data
+                    c=scatter.get_facecolor(),  # Colors
+                    s=scatter.get_sizes(),  # Marker sizes
+                )
+                ax_limits(ax, x_min, x_max, x_rang, grid_color)
             # Adding customisation features
             if custom_dict_list:
                 custom_dict = custom_dict_list[aligned_idx]
-                ax.set_title(custom_dict.get("title",""), # Setting the title
-                             fontsize=custom_dict.get("title_size", 14), # Setting the size
-                             color=custom_dict.get("title_color", "black"), # Setting the color
+                ax.set_title(
+                    custom_dict.get("title", ""),  # Setting the title
+                    fontsize=custom_dict.get("title_size", 14),  # Setting the size
+                    color=custom_dict.get("title_color", "black"),  # Setting the color
                 )
 
     plt.subplots_adjust(hspace=vertical_spacing)

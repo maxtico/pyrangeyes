@@ -2,6 +2,9 @@ import pyranges_plot as prp
 import pyranges as pr
 import pytest
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use("Agg")
 
 data1 = pr.PyRanges(
     {
@@ -225,7 +228,6 @@ def test14():
         color_col="depth",
         depth_col="depth",
         tooltip="{depth}",
-        theme="Mariotti_lab",
     )
     fig = plt.gcf()
     return fig

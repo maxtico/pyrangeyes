@@ -28,7 +28,7 @@ def plot_exons_plt(
     transcript_str=False,
     tooltip=None,
     legend=False,
-    return_plot=None,   
+    return_plot=None,
     add_aligned_plots=None,
     y_labels=False,
     text=True,
@@ -135,7 +135,8 @@ def plot_exons_plt(
             arrow_color,
             arrow_size,
             depth_col,
-        )
+        ),
+        include_groups=True,
     )
 
     # Prevent zoom in y axis
@@ -158,12 +159,10 @@ def plot_exons_plt(
                 )
         if return_plot is None:
             plt.show()
-        elif return_plot == 'fig':
+        elif return_plot == "fig":
             return fig
         else:
-            raise Exception(
-                "Matplotlib can not return a Dash app."
-            )
+            raise Exception("Matplotlib can not return a Dash app.")
     else:
         plt.savefig(to_file, format=to_file[-3:], dpi=400)
 
@@ -230,7 +229,7 @@ def gby_plot_exons(
     # get introns
     df[START_COL] = df[START_COL].astype(int)
     df[END_COL] = df[END_COL].astype(int)
-    introns = df.complement(match_by=id_col)
+    introns = df.complement_ranges(id_col)
     introns["intron_dir_flag"] = [0] * len(introns)
 
     # consider shrunk

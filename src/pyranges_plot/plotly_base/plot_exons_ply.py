@@ -104,7 +104,8 @@ def plot_exons_ply(
             arrow_color,
             arrow_size,
             depth_col,
-        )
+        ),
+        include_groups=True,
     )  # .reset_index(level=PR_INDEX_COL)
 
     # Adjust plot display
@@ -256,7 +257,7 @@ def gby_plot_exons(
     # get introns
     df[START_COL] = df[START_COL].astype(int)
     df[END_COL] = df[END_COL].astype(int)
-    introns = df.complement(match_by=id_col)
+    introns = df.complement_ranges(id_col)
     introns["intron_dir_flag"] = [0] * len(introns)
 
     # consider shrunk

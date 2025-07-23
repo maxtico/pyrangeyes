@@ -1,5 +1,4 @@
 import plotly.graph_objects as go
-import pyranges_plot as prp
 import matplotlib.pyplot as plt
 
 
@@ -137,7 +136,7 @@ def make_scatter(
         size_values = 8  # Default marker size
 
     # Create a scatter plot
-    if engine=='ply':
+    if engine == "ply":
         scatter = go.Scatter(
             x=p[x],  # X-axis: Start positions                 #### x
             y=p[y],  # Y-axis: Counts of transcripts           #### y or __count__
@@ -145,7 +144,9 @@ def make_scatter(
             marker=dict(
                 size=size_values,
                 color=color_values,  # Assign color values
-                colorscale="Viridis" if color_by else None,  # Use a colormap if coloring
+                colorscale="Viridis"
+                if color_by
+                else None,  # Use a colormap if coloring
             ),
             hovertemplate="<b>Position:</b> %{x}<br><b>Count:</b> %{y}<extra></extra>",
         )
