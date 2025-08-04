@@ -108,6 +108,7 @@ def plot_exons_plt(
     )
 
     # Plot genes
+    # pd.DataFrame.groupby(subdf,
     subdf.groupby(
         id_col + [PR_INDEX_COL, CHROM_COL], group_keys=False, observed=True
     ).apply(
@@ -220,7 +221,7 @@ def gby_plot_exons(
     # get introns
     df[START_COL] = df[START_COL].astype(int)
     df[END_COL] = df[END_COL].astype(int)
-    introns = df.complement(transcript_id=id_col)
+    introns = df.complement_ranges(id_col)
     introns["intron_dir_flag"] = [0] * len(introns)
 
     # consider shrunk

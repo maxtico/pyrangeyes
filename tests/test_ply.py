@@ -325,7 +325,7 @@ test_cases = [
             color_col="depth",
             depth_col="depth",
             tooltip="{depth}",
-            theme="Mariotti_lab",
+            theme="pastel",
             return_plot="fig",
         ),
     ),

@@ -225,7 +225,7 @@ def test14():
         color_col="depth",
         depth_col="depth",
         tooltip="{depth}",
-        theme="Mariotti_lab",
+        theme="pastel",
     )
     fig = plt.gcf()
     return fig

@@ -122,7 +122,7 @@ def apply_gene_bridge(
 
         # if there are exons and cds, subtract
         if sum([cds.empty, exons.empty]) == 2:
-            exons = exons.subtract_ranges(cds)
+            exons = exons.subtract_overlaps(cds)
         df = pr.concat([cds, exons])
 
     # Define depth order

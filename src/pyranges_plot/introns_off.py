@@ -77,13 +77,13 @@ def introns_resize(df, ts_data, id_col):
     # get flexible introns
     exons = p.copy()
     # introns = get_introns(p, [PR_INDEX_COL] + id_col)
-    introns = p.complement(use_strand=False)
+    introns = p.complement_ranges(use_strand=False)
     introns.reset_index(drop=True, inplace=True)  # reset duplicate labels in index
 
     to_shrink = pr.PyRanges()
 
     if not introns.empty:
-        flex_introns = introns.subtract_ranges(exons, strand_behavior="ignore")
+        flex_introns = introns.subtract_overlaps(exons, strand_behavior="ignore")
 
         # obtain shrinkable regions
         to_shrink = flex_introns.merge_overlaps(use_strand=False)  # unique ranges
