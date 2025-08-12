@@ -63,6 +63,7 @@ def plot_direction(
                     color=arrow_color,
                     linewidth=arrow_width,
                     solid_capstyle=arrow_style,
+                    zorder=4
                 )
 
                 ax.plot(
@@ -71,6 +72,7 @@ def plot_direction(
                     color=arrow_color,
                     linewidth=arrow_width,
                     solid_capstyle=arrow_style,
+                    zorder=4
                 )
 
             elif strand == "-":
@@ -80,6 +82,7 @@ def plot_direction(
                     color=arrow_color,
                     linewidth=arrow_width,
                     solid_capstyle=arrow_style,
+                    zorder=4
                 )
 
                 ax.plot(
@@ -88,6 +91,7 @@ def plot_direction(
                     color=arrow_color,
                     linewidth=arrow_width,
                     solid_capstyle=arrow_style,
+                    zorder=4
                 )
 
     return dir_flag
@@ -207,6 +211,7 @@ def plot_row(
         edgecolor=exon_border,
         facecolor=exon_color,
         fill=True,
+        zorder=3
     )
     ax.add_patch(exon_rect)
 

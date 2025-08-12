@@ -31,7 +31,7 @@ def ax_limits(ax, x_min, x_max, x_rang, grid_color):
         x_min - 0.05 * x_rang, x_max + 0.05 * x_rang
     )  # add 5% to limit coordinates range
     plt.ticklabel_format(style="plain")
-    ax.grid(visible=True, axis="x", linestyle=":", color=grid_color)  # , zorder = -1)
+    ax.grid(visible=True, axis="x", linestyle=":", color=grid_color, zorder = -1)
     ax.xaxis.set_major_formatter(ScalarFormatter())
     ax.xaxis.get_major_formatter().set_scientific(False)  # not scientific notation
     ax.xaxis.get_major_formatter().set_useOffset(False)  # not offset notation
@@ -63,6 +63,7 @@ def ax_shrink_rects(ax, fig, ts_data, chrom, y_min, y_max, shrunk_bkg, tag_backg
             facecolor=shrunk_bkg,
             fill=True,
             linewidth=0,
+            zorder=3
         )
         ax.add_patch(ts_range)
         make_annotation(

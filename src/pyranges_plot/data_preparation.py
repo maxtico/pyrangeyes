@@ -167,7 +167,7 @@ def get_plycolormap(colormap_string):
         return getattr(pc.qualitative, colormap_string)
 
 
-def subdf_assigncolor(subdf, colormap, color_col, exon_border):
+def subdf_assigncolor(subdf, colormap, color_col, exon_border,warnings):
     """Add color information to data."""
 
     # Create COLOR_COL column
@@ -204,7 +204,8 @@ def subdf_assigncolor(subdf, colormap, color_col, exon_border):
         # adjust number of colors
         if n_color_tags > len(colormap):
             engine = get_engine()
-            warnings = get_warnings()
+            if warnings is None:
+                warnings = get_warnings()
             if engine in ["plt", "matplotlib"] and warnings:
                 plt_popup_warning(
                     "The genes are colored by iterating over the given color list."
@@ -236,14 +237,15 @@ def subdf_assigncolor(subdf, colormap, color_col, exon_border):
         # add black genes warning if needed
         if subdf[COLOR_INFO].isna().any():
             engine = get_engine()
-            warnings = get_warnings()
+            if warnings is None:
+                warnings = get_warnings()
             if engine in ["plt", "matplotlib"] and warnings:
                 plt_popup_warning(
                     "Some genes do not have a color assigned so they are colored in black."
                 )
             elif engine in ["ply", "plotly"] and warnings:
                 subdf["_blackwarning!"] = [1] * len(subdf)
-            subdf[COLOR_INFO].fillna("black", inplace=True)  # black for not specified
+            subdf.fillna({COLOR_INFO: "black"}, inplace=True)
 
     if exon_border:
         subdf[BORDER_COLOR_COL] = [exon_border] * len(subdf)
