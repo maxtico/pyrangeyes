@@ -1,6 +1,10 @@
-name: Python Package using Conda
+name: Check
 
-on: [push, pull_request]
+on:
+  pull_request:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
 
 jobs:
   build-linux:
