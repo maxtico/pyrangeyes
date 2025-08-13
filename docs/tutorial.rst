@@ -410,31 +410,31 @@ Let's see an example with two PyRanges objects, mapping the occurrences of two a
 
 .. code-block::
 
-      index  |      Start      End    Chromosome  id        trait1    trait2      depth
-      int64  |      int64    int64         int64  object    object    object      int64
-    -------  ---  -------  -------  ------------  --------  --------  --------  -------
-          0  |         10       20             1  gene1     exon      gene_1          0
-          1  |         50       75             1  gene1     exon      gene_1          0
-          2  |         90      130             1  gene1     exon      gene_1          0
-          3  |         13       16             1  gene1     aa        Ala             1
-          4  |         60       63             1  gene1     aa        Ala             1
-          5  |         72       75             1  gene1     aa        Ala             1
-          6  |        120      123             1  gene1     aa        Ala             1
-    PyRanges with 7 rows, 7 columns, and 1 index columns.
+    index  |      Start      End    Chromosome  id        trait1    trait2      depth      thick
+    int64  |      int64    int64         int64  object    object    object      int64    float64
+    -------  ---  -------  -------  ------------  --------  --------  --------  -------  ---------
+        0  |         10       20             1  gene1     exon      gene_1          0        0.3
+        1  |         50       75             1  gene1     exon      gene_1          0        0.3
+        2  |         90      130             1  gene1     exon      gene_1          0        0.3
+        3  |         13       16             1  gene1     aa        Ala             1        0.6
+        4  |         60       63             1  gene1     aa        Ala             1        0.6
+        5  |         72       75             1  gene1     aa        Ala             1        0.6
+        6  |        120      123             1  gene1     aa        Ala             1        0.6
+    PyRanges with 7 rows, 8 columns, and 1 index columns.
     Contains 1 chromosomes.
 
-      index  |      Start      End    Chromosome  id        trait1    trait2      depth
-      int64  |      int64    int64         int64  object    object    object      int64
-    -------  ---  -------  -------  ------------  --------  --------  --------  -------
-          0  |         10       20             1  gene1     exon      gene_1          0
-          1  |         50       75             1  gene1     exon      gene_1          0
-          2  |         90      130             1  gene1     exon      gene_1          0
-          3  |         15       18             1  gene1     aa        Cys             1
-          4  |         55       58             1  gene1     aa        Cys             1
-          5  |         62       65             1  gene1     aa        Cys             1
-          6  |        100      103             1  gene1     aa        Cys             1
-          7  |        110      113             1  gene1     aa        Cys             1
-    PyRanges with 8 rows, 7 columns, and 1 index columns.
+    index  |      Start      End    Chromosome  id        trait1    trait2      depth      thick
+    int64  |      int64    int64         int64  object    object    object      int64    float64
+    -------  ---  -------  -------  ------------  --------  --------  --------  -------  ---------
+        0  |         10       20             1  gene1     exon      gene_1          0        0.3
+        1  |         50       75             1  gene1     exon      gene_1          0        0.3
+        2  |         90      130             1  gene1     exon      gene_1          0        0.3
+        3  |         15       18             1  gene1     aa        Cys             1        0.6
+        4  |         55       58             1  gene1     aa        Cys             1        0.6
+        5  |         62       65             1  gene1     aa        Cys             1        0.6
+        6  |        100      103             1  gene1     aa        Cys             1        0.6
+        7  |        110      113             1  gene1     aa        Cys             1        0.6
+    PyRanges with 8 rows, 8 columns, and 1 index columns.
     Contains 1 chromosomes.
 
 
@@ -488,7 +488,7 @@ determine thickness of the corresponding intervals:
         id_col="id",
         color_col="trait1",
         y_labels=["pr Alanine", "pr Cysteine"],
-        thickness_col="trait1",
+        thickness_col="thick",
     )
 
 .. image:: images/prp_rtd_11.png
