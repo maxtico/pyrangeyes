@@ -104,10 +104,10 @@ def plot(
 
     thickness_col: str, default None
         Name of a numerical data column whose values specify the height (thickness)
-        of the rectangles representing intervals. Heights are interpreted directly 
-        as absolute values in the same units as 'exon_height'. 
-        If provided, this parameter overrides the default uniform thickness. 
-        Note that if 'thick_cds' is set to True, this parameter will be ignored 
+        of the rectangles representing intervals. Heights are interpreted directly
+        as absolute values in the same units as 'exon_height'.
+        If provided, this parameter overrides the default uniform thickness.
+        Note that if 'thick_cds' is set to True, this parameter will be ignored
         and thickness will be determined from transcript structure instead.
 
     depth_col: str, default None
@@ -398,7 +398,9 @@ def plot(
         # If using thick_cds (categorical mode)
         if thick_cds:
             # keep existing categorical mapping logic
-            thick_tags_l = sorted(list(subdf[thickness_col].drop_duplicates()), reverse=True)
+            thick_tags_l = sorted(
+                list(subdf[thickness_col].drop_duplicates()), reverse=True
+            )
             if len(thick_tags_l) == 1:
                 thick_tags_l = 2 * thick_tags_l
             thick_tags_d = {
@@ -410,7 +412,9 @@ def plot(
         else:
             # New behaviour: must be numeric
             if not np.issubdtype(subdf[thickness_col].dtype, np.number):
-                raise Exception("thickness_col must be numeric when not using 'thick_cds'.")
+                raise Exception(
+                    "thickness_col must be numeric when not using 'thick_cds'."
+                )
             subdf[THICK_COL] = subdf[thickness_col]
 
     else:
@@ -423,7 +427,9 @@ def plot(
     elif isinstance(color_col, str):
         color_col = [color_col]
 
-    subdf = subdf_assigncolor(subdf, colormap, color_col, feat_dict["exon_border"],warnings)
+    subdf = subdf_assigncolor(
+        subdf, colormap, color_col, feat_dict["exon_border"], warnings
+    )
 
     # Create genes metadata DataFrame
     genesmd_df = get_genes_metadata(

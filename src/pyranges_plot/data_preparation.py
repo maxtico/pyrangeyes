@@ -167,7 +167,7 @@ def get_plycolormap(colormap_string):
         return getattr(pc.qualitative, colormap_string)
 
 
-def subdf_assigncolor(subdf, colormap, color_col, exon_border,warnings):
+def subdf_assigncolor(subdf, colormap, color_col, exon_border, warnings):
     """Add color information to data."""
 
     # Create COLOR_COL column

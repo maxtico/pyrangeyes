@@ -1,5 +1,4 @@
 import os
-import tkinter as tk
 import ipywidgets as widgets
 from IPython.display import display, clear_output
 
@@ -31,26 +30,30 @@ def percent2coord(ax, x_percent):
 
     return percent_coord
 
+
 def running_in_jupyter():
     try:
         shell = get_ipython().__class__.__name__
-        return shell == 'ZMQInteractiveShell'
+        return shell == "ZMQInteractiveShell"
     except NameError:
         return False
+
 
 if running_in_jupyter():
 
     def plt_popup_warning(txt, bkg="#1f1f1f", txtcol="white", botcol="#D6AA00"):
         # Widget Label i Botó
         out = widgets.Output()
-        
+
         label = widgets.HTML(
             value=f'<div style="color:{txtcol}; background-color:{bkg}; padding:10px; font-family:Sans; font-size:15px;">{txt}</div>'
         )
-        button = widgets.Button(description="Got it", 
-                                style={'button_color': botcol, 'font_weight': 'bold'},
-                                layout=widgets.Layout(margin='10px 0 0 0'))
-        
+        button = widgets.Button(
+            description="Got it",
+            style={"button_color": botcol, "font_weight": "bold"},
+            layout=widgets.Layout(margin="10px 0 0 0"),
+        )
+
         btn = widgets.Button(description="Got it")
         box = widgets.HBox([label, button])
         display(box)
@@ -60,8 +63,8 @@ if running_in_jupyter():
                 box.close()
             except Exception:
                 pass
-        
-        button.on_click(_on_click)        
+
+        button.on_click(_on_click)
 
 else:
 
