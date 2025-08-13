@@ -31,4 +31,5 @@ jobs:
         with:
           user: ${{ secrets.PYRANGES_PYPI_USER }}
           password: ${{ secrets.PYRANGES_PYPI_PASSWORD }}
+          attestations: false
           verbose: true
