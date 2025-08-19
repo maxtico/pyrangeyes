@@ -23,6 +23,8 @@ def plot_exons_ply(
     transcript_str=False,
     tooltip=None,
     legend=False,
+    return_plot=None,
+    add_aligned_plots=None,
     y_labels=False,
     text=True,
     title_chr=None,
@@ -74,6 +76,7 @@ def plot_exons_ply(
         v_spacer,
         exon_height,
         plot_border,
+        add_aligned_plots,
     )
 
     # Plot genes
@@ -90,6 +93,7 @@ def plot_exons_ply(
             tooltip,
             intron_color,
             legend,
+            return_plot,
             transcript_str,
             text,
             text_size,
@@ -100,7 +104,8 @@ def plot_exons_ply(
             arrow_color,
             arrow_size,
             depth_col,
-        )
+        ),
+        include_groups=True,
     )  # .reset_index(level=PR_INDEX_COL)
 
     # Adjust plot display
@@ -152,9 +157,14 @@ def plot_exons_ply(
         fig.data[0].customdata = np.array(["no warnings"])
 
     if to_file is None:
-        app_instance = initialize_dash_app(fig, max_shown)
-        app_instance.run(port=plotly_port)
-
+        if return_plot is None:
+            app_instance = initialize_dash_app(fig, max_shown)
+            app_instance.run(port=plotly_port)
+        elif return_plot == "app":
+            app_instance = initialize_dash_app(fig, max_shown)
+            return app_instance
+        elif return_plot == "fig":
+            return fig
     else:
         fig.update_layout(width=file_size[0], height=file_size[1])
         pio.write_image(fig, to_file)
@@ -170,6 +180,7 @@ def gby_plot_exons(
     showinfo,
     intron_color,
     legend,
+    return_plot,
     transcript_str,
     text,
     text_size,
@@ -213,10 +224,14 @@ def gby_plot_exons(
 
     # Get the gene information to print on hover
     # default
-    if strand:
-        geneinfo = f"[{strand}] ({min(df.__oriStart__)}, {max(df.__oriEnd__)})<br>ID: {geneid}"  # default with strand
+    if "vcf" in df.columns and df["vcf"].any():
+        tooltip_col = df["Tooltip_col"]
+        geneinfo = f"({min(df.__oriStart__)}, {max(df.__oriEnd__)})<br>ID: {genename}<br>{tooltip_col}"
     else:
-        geneinfo = f"({min(df.__oriStart__)}, {max(df.__oriEnd__)})<br>ID: {geneid}"  # default without strand
+        if strand:
+            geneinfo = f"[{strand}] ({min(df.__oriStart__)}, {max(df.__oriEnd__)})<br>ID: {geneid}"  # default with strand
+        else:
+            geneinfo = f"({min(df.__oriStart__)}, {max(df.__oriEnd__)})<br>ID: {geneid}"  # default without strand
 
     # add annotation for introns to plot
     x0, x1 = min(df[START_COL]), max(df[END_COL])
@@ -242,7 +257,7 @@ def gby_plot_exons(
     # get introns
     df[START_COL] = df[START_COL].astype(int)
     df[END_COL] = df[END_COL].astype(int)
-    introns = df.complement(transcript_id=id_col)
+    introns = df.complement_ranges(id_col)
     introns["intron_dir_flag"] = [0] * len(introns)
 
     # consider shrunk
@@ -285,6 +300,7 @@ def gby_plot_exons(
         chrom_ix,
         showinfo,
         legend,
+        return_plot,
         arrow_size,
         arrow_color,
         arrow_line_width,

@@ -1,4 +1,6 @@
 import pyranges as pr
+import os
+from .vcf.vcf_reader import read_vcf
 
 
 p1 = pr.PyRanges(
@@ -155,6 +157,7 @@ p_ala = pr.PyRanges(
         "trait1": ["exon"] * 3 + ["aa"] * 4,
         "trait2": ["gene_1"] * 3 + ["Ala"] * 4,
         "depth": [0] * 3 + [1] * 4,
+        "thick": [0.3] * 3 + [0.6] * 4,
     }
 )
 
@@ -167,5 +170,39 @@ p_cys = pr.PyRanges(
         "trait1": ["exon"] * 3 + ["aa"] * 5,
         "trait2": ["gene_1"] * 3 + ["Cys"] * 5,
         "depth": [0] * 3 + [1] * 5,
+        "thick": [0.3] * 3 + [0.6] * 5,
     }
 )
+
+# Define the path to the data folder
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+
+def ncbi_gff():
+    """
+    Load the example NCBI GFF3 file as a PyRanges object.
+
+    Returns:
+        PyRanges: A PyRanges object containing the GFF3 data.
+    """
+    file_path = os.path.join(DATA_DIR, "ncbi.gff3")
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(
+            "The file 'ncbi.gff3' was not found in the data folder."
+        )
+    return pr.read_gff3(file_path)
+
+
+def ncbi_vcf():
+    """
+    Load the example VCF file as a PyRanges object.
+
+    Returns:
+        PyRanges: A PyRanges object containing the VCF data.
+    """
+    file_path = os.path.join(DATA_DIR, "homo_sapiens_clinically_associated.vcf")
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(
+            "The file 'homo_sapiens_clinically_associated.vcf' was not found in the data folder."
+        )
+    return read_vcf(file_path)

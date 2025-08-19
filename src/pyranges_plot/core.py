@@ -126,7 +126,7 @@ def set_theme(name):
     ----------
     name: {str, dict, None}
         Name of the predefined theme or dictionary with defined options to be set as new default.
-        Currently available themes are "dark", "light", "Mariotti_lab" and "swimming_pool".
+        Currently available themes are "dark", "light", "pastel" and "swimming_pool".
 
     Examples
     --------
@@ -362,9 +362,9 @@ def print_options(return_keys=False):
                 return fstr
 
         # Create table header
-        header = f"+{'-' * (name_sz+2)}+{'-' * (value_sz+2)}+{'-' * (mod_sz+2)}+{'-' * (desc_sz+2)}+\n"
+        header = f"+{'-' * (name_sz + 2)}+{'-' * (value_sz + 2)}+{'-' * (mod_sz + 2)}+{'-' * (desc_sz + 2)}+\n"
         header += f"| {'Feature':^{name_sz}} | {'Value':^{value_sz}} | {'Edited?':^{mod_sz}} | {'Description':^{desc_sz}} |\n"
-        header += f"+{'-' * (name_sz+2)}+{'-' * (value_sz+2)}+{'-' * (mod_sz+2)}+{'-' * (desc_sz+2)}+"
+        header += f"+{'-' * (name_sz + 2)}+{'-' * (value_sz + 2)}+{'-' * (mod_sz + 2)}+{'-' * (desc_sz + 2)}+"
 
         # Divide features
         extragen_feat_df = feat_df[
@@ -377,6 +377,7 @@ def print_options(return_keys=False):
                     "plot_border",
                     "title_size",
                     "title_color",
+                    "title_font",
                     "grid_color",
                     "exon_border",
                     "shrunk_bkg",
@@ -419,7 +420,7 @@ def print_options(return_keys=False):
         print(header)
         print(rows_eg)
         print(
-            f"+{'-' * (name_sz+2)}+{'-' * (value_sz+2)}+{'-' * (mod_sz+2)}+{'-' * (desc_sz+2)}+"
+            f"+{'-' * (name_sz + 2)}+{'-' * (value_sz + 2)}+{'-' * (mod_sz + 2)}+{'-' * (desc_sz + 2)}+"
         )
         print(rows_ig)
         print(

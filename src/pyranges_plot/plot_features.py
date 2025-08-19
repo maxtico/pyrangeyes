@@ -42,6 +42,7 @@ plot_features_dict = {
     "plot_bkg": ("white", "Background color of the plots.", " "),
     "plot_border": ("black", "Color of the line delimiting the plots.", " "),
     "plotly_port": (8050, "Port to run plotly app.", " "),
+    "return_plot": (None, "Whether the plot is returned or not.", " "),
     "shrink_threshold": (
         0.01,
         "Minimum length of an intron or intergenic region in order for it to be shrunk while using the “shrink” feature. When threshold is float, it represents the fraction of the plot space, while an int threshold represents number of positions or base pairs.",
@@ -65,6 +66,7 @@ plot_features_dict = {
     "text_size": (10, "Fontsize of the text annotation beside the intervals.", " "),
     "title_color": ("black", "Color of the plots' titles.", " "),
     "title_size": (18, "Size of the plots' titles.", " "),
+    "title_font": ("Arial", "Font of the plots' titles.", " "),
     "v_spacer": (0.5, "Vertical distance between the intervals and plot border.", " "),
     "x_ticks": (
         None,
@@ -91,7 +93,7 @@ theme_dark = {
     "shrunk_bkg": "lightblue",
 }
 
-# Mariotti theme
+# pastel default theme
 ori_l = ["#f05f89", "#f0db36", "#7bc45f", "#5e4699", "#f7943a", "#537ebf", "#ee3a36"]
 darker_l = ["#9b3c59", "#a28b22", "#4d6e3a", "#3c285f", "#a46327", "#345a7d", "#9c2523"]
 lighter_l = [
@@ -104,7 +106,7 @@ lighter_l = [
     "#ff7a74",
 ]
 
-theme_mariotti = {
+theme_pastel = {
     "colormap": ori_l + lighter_l + darker_l,
     "shrunk_bkg": "#e7e0f5",
     "fig_bkg": "#fff5ee",
@@ -126,6 +128,6 @@ theme_sp = {
 builtin_themes = {
     "light": plot_features_dict_vals,
     "dark": theme_dark,
-    "Mariotti_lab": theme_mariotti,
+    "pastel": theme_pastel,
     "swimming_pool": theme_sp,
 }
