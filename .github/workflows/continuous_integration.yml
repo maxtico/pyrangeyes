@@ -1,32 +1,38 @@
-name: Python Package using Conda
+name: Check
 
-on: [push, pull_request]
+on:
+  pull_request:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
 
 jobs:
   build-linux:
     runs-on: ubuntu-24.04
     strategy:
-      max-parallel: 5
-
+      max-parallel: 5    
+    
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.12
+    - name: Set up Python
       uses: actions/setup-python@v3
       with:
         python-version: '3.12'
-    - name: Add conda to system path
+    
+    - name: Set up virtual environment and install dependencies
       run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        echo $CONDA/bin >> $GITHUB_PATH
-    - name: Install dependencies
-      run: |
-        # I am using the pip installed by conda, bad practice but OK in C/I I think
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
         pip install -e .[all]
-        pip install ruff pytest
+        pip install pytest pytest-mpl ruff
+    
     - name: Check formatting with ruff
       run: |
-         ruff format --check src
-    - name: Test with pytest
+        ./venv/bin/ruff format --check src
+    
+    - name: Run tests MPL backend Agg
       run: |
-        conda install pytest
-        pytest --ignore=examples
+        export MPLBACKEND=Agg
+        ./venv/bin/pytest tests/test_mpl.py
+        ./venv/bin/pytest tests/test_ply.py

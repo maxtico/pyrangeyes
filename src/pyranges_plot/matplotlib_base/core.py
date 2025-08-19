@@ -1,4 +1,14 @@
-import tkinter as tk
+import os
+import ipywidgets as widgets
+from IPython.display import display, clear_output
+
+if os.environ.get("DISPLAY"):
+    try:
+        import tkinter as tk
+    except ImportError:
+        tk = None
+else:
+    tk = None
 
 
 def coord2percent(ax, X0, X1):
@@ -21,27 +31,57 @@ def percent2coord(ax, x_percent):
     return percent_coord
 
 
-def plt_popup_warning(txt, bkg="#1f1f1f", txtcol="white", botcol="#D6AA00"):
-    """Create warning window for Matplotlib plots."""
+def running_in_jupyter():
+    try:
+        shell = get_ipython().__class__.__name__
+        return shell == "ZMQInteractiveShell"
+    except NameError:
+        return False
 
-    warn = tk.Tk()
 
-    # Title and background
-    warn.wm_title("Warning!")
-    warn.configure(background=bkg)
+if running_in_jupyter():
 
-    # Label for warning text
-    label = tk.Label(warn, text=txt, font=("Sans", 15), fg=txtcol, bg=bkg)
-    label.pack(side="top", anchor="center", pady=10)
+    def plt_popup_warning(txt, bkg="#1f1f1f", txtcol="white", botcol="#D6AA00"):
+        # Widget Label i Botó
+        out = widgets.Output()
 
-    # Button
-    bot = tk.Button(
-        warn, text="Got it", command=lambda: warn.destroy(), fg="black", bg=botcol
-    )
-    bot.pack(pady=10)
+        label = widgets.HTML(
+            value=f'<div style="color:{txtcol}; background-color:{bkg}; padding:10px; font-family:Sans; font-size:15px;">{txt}</div>'
+        )
+        button = widgets.Button(
+            description="Got it",
+            style={"button_color": botcol, "font_weight": "bold"},
+            layout=widgets.Layout(margin="10px 0 0 0"),
+        )
 
-    # Start main loop
-    warn.wait_window()
+        btn = widgets.Button(description="Got it")
+        box = widgets.HBox([label, button])
+        display(box)
+
+        def _on_click(b):
+            try:
+                box.close()
+            except Exception:
+                pass
+
+        button.on_click(_on_click)
+
+else:
+
+    def plt_popup_warning(txt, bkg="#1f1f1f", txtcol="white", botcol="#D6AA00"):
+        warn = tk.Tk()
+        warn.wm_title("Warning!")
+        warn.configure(background=bkg)
+
+        label = tk.Label(warn, text=txt, font=("Sans", 15), fg=txtcol, bg=bkg)
+        label.pack(side="top", anchor="center", pady=10)
+
+        bot = tk.Button(
+            warn, text="Got it", command=warn.destroy, fg="black", bg=botcol
+        )
+        bot.pack(pady=10)
+
+        warn.wait_window()
 
 
 def make_annotation(item, fig, ax, geneinfo, tag_background):

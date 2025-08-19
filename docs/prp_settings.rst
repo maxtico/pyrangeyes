@@ -8,4 +8,4 @@ parameters.
 .. automodule:: pyranges_plot
     :members:
     :imported-members:  # Ensure this is set to include imported members
-    :exclude-members: plot, register_plot, print_options, set_options, reset_options
+    :exclude-members: plot, register_plot, print_options, set_options, reset_options, make_scatter, ncbi_gff, ncbi_vcf

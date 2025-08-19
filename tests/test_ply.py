@@ -1,10 +1,26 @@
 import pyranges_plot as prp
 import pyranges as pr
-from PIL import Image, ImageChops
 import os
 import pytest
 import plotly.graph_objects as go
-from io import BytesIO
+import json
+from deepdiff import DeepDiff
+import numpy as np
+from plotly.utils import PlotlyJSONEncoder
+
+
+def normalize_plotly_json(obj):
+    import numpy as np
+    if isinstance(obj, dict):
+        return {k: normalize_plotly_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [normalize_plotly_json(i) for i in obj]
+    elif isinstance(obj, tuple):
+        return list(normalize_plotly_json(i) for i in obj)
+    elif isinstance(obj, np.ndarray):
+        return normalize_plotly_json(obj.tolist())
+    else:
+        return obj
 
 data1 = pr.PyRanges(
     {
@@ -163,7 +179,7 @@ aligned_traces = [
     )
 ]
 
-aligned = prp.make_scatter(vcf, y="Count")
+aligned = prp.make_scatter(vcf, y="Count", engine="ply")
 aligned1 = prp.make_scatter(
     vcf,
     y="Count",
@@ -171,6 +187,7 @@ aligned1 = prp.make_scatter(
     title="Human Variants",
     title_color="Magenta",
     title_size=18,
+    engine="ply",
 )
 aligned2 = prp.make_scatter(
     vcf,
@@ -181,6 +198,7 @@ aligned2 = prp.make_scatter(
     title_size=18,
     height=0.5,
     y_space=0.5,
+    engine="ply",
 )
 
 prp.set_engine("ply")
@@ -325,7 +343,6 @@ test_cases = [
             color_col="depth",
             depth_col="depth",
             tooltip="{depth}",
-            theme="pastel",
             return_plot="fig",
         ),
     ),
@@ -390,32 +407,19 @@ test_cases = [
     ),
 ]
 
-
+"""
+for test_name, fig in test_cases:
+    json_path = os.path.join(BASELINE_DIR, f"{test_name}.json")
+    with open(json_path, "w") as f:
+        json.dump(fig.to_plotly_json(), f, indent=2, cls=PlotlyJSONEncoder)
+"""
 @pytest.mark.parametrize("test_name, plot_func", test_cases)
 # test id_col
 def test_plot_comparison(test_name, plot_func):
-    p = plot_func
-    result_io = BytesIO()
-    p.write_image(result_io, format="png", width=1200, height=600)
-    result_io.seek(0)
-
-    """
-    output_path = os.path.join(BASELINE_DIR, f"{test_name}.png")
-    with open(output_path, "wb") as f:
-        f.write(result_io.read())
-    """
-
-    baseline_path = os.path.join(BASELINE_DIR, f"{test_name}.png")
-
-    # Opening images
-    baseline = Image.open(baseline_path).convert("RGB")
-    result = Image.open(result_io).convert("RGB")
-
-    # Resizing images to avoid pytest crash
-    if result.size != baseline.size:
-        result = result.resize(baseline.size)
-
-    diff = ImageChops.difference(baseline, result)
-
-    if diff.getbbox():
-        pytest.fail(f"{test_name} does not match the baseline image.")
+    fig = plot_func    # JSON actual generat
+    actual_json = normalize_plotly_json(fig.to_plotly_json())   # Ruta al baseline
+    baseline_path = os.path.join(BASELINE_DIR, f"{test_name}.json")    # Carreguem JSON del baseline
+    with open(baseline_path, "r") as f:
+        expected_json = normalize_plotly_json(json.load(f))    # Compara
+    diff = DeepDiff(expected_json, actual_json, ignore_order=True, report_repetition=True)
+    assert diff == {}, f"{test_name} does not match baseline:\n{diff.pretty()}"

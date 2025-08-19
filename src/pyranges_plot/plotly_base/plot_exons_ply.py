@@ -104,7 +104,8 @@ def plot_exons_ply(
             arrow_color,
             arrow_size,
             depth_col,
-        )
+        ),
+        include_groups=True,
     )  # .reset_index(level=PR_INDEX_COL)
 
     # Adjust plot display
