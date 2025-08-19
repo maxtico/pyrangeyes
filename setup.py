@@ -2,7 +2,6 @@ from setuptools import find_packages, setup
 
 setup(
     name="pyranges_plot",
-    version="0.1.4",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,  # Ensure package data is included
