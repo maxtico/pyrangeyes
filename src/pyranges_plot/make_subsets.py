@@ -1,5 +1,12 @@
-import plotly.graph_objects as go
-import matplotlib.pyplot as plt
+try:
+    import plotly.graph_objects as go
+except ImportError:
+    pass
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    pass
 
 
 def make_scatter(
