@@ -157,6 +157,7 @@ p_ala = pr.PyRanges(
         "trait1": ["exon"] * 3 + ["aa"] * 4,
         "trait2": ["gene_1"] * 3 + ["Ala"] * 4,
         "depth": [0] * 3 + [1] * 4,
+        "thick": [0.3] * 3 + [0.6] * 4,
     }
 )
 
@@ -169,6 +170,7 @@ p_cys = pr.PyRanges(
         "trait1": ["exon"] * 3 + ["aa"] * 5,
         "trait2": ["gene_1"] * 3 + ["Cys"] * 5,
         "depth": [0] * 3 + [1] * 5,
+        "thick": [0.3] * 3 + [0.6] * 5,
     }
 )
 

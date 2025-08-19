@@ -103,10 +103,12 @@ def plot(
         Name of the column used to color the genes. If not specified, id_col will be used.
 
     thickness_col: str, default None
-        Name of the data column with max 2 different values to plot the intervals correspondig to one value to
-        thicker than the others. The first value by alphabetical order will have the height specified
-        as 'exon_height', and the second will be 0.3*'exon_height'. Note that this parameter will be
-        overseen if the 'thick_cds' parameter is set to True.
+        Name of a numerical data column whose values specify the height (thickness)
+        of the rectangles representing intervals. Heights are interpreted directly
+        as absolute values in the same units as 'exon_height'.
+        If provided, this parameter overrides the default uniform thickness.
+        Note that if 'thick_cds' is set to True, this parameter will be ignored
+        and thickness will be determined from transcript structure instead.
 
     depth_col: str, default None
         Name of the data column to be used for setting the order to plot the intervals. The intervals with
@@ -393,21 +395,28 @@ def plot(
                 f"The provided thickness_col {thickness_col} is not present in the given data."
             )
 
-        # Does it have more than 2 values
-        if len(subdf[thickness_col].drop_duplicates()) > 2:
-            raise Exception("Thickness_col must have a max of 2 different values.")
+        # If using thick_cds (categorical mode)
+        if thick_cds:
+            # keep existing categorical mapping logic
+            thick_tags_l = sorted(
+                list(subdf[thickness_col].drop_duplicates()), reverse=True
+            )
+            if len(thick_tags_l) == 1:
+                thick_tags_l = 2 * thick_tags_l
+            thick_tags_d = {
+                thick_tags_l[0]: feat_dict["transcript_utr_width"],
+                thick_tags_l[1]: feat_dict["exon_height"],
+            }
+            subdf[THICK_COL] = subdf[thickness_col].map(thick_tags_d)
 
-        # add thickness_col
-        thick_tags_l = sorted(
-            list(subdf[thickness_col].drop_duplicates()), reverse=True
-        )
-        if len(thick_tags_l) == 1:
-            thick_tags_l = 2 * thick_tags_l
-        thick_tags_d = {
-            thick_tags_l[0]: feat_dict["transcript_utr_width"],
-            thick_tags_l[1]: feat_dict["exon_height"],
-        }
-        subdf[THICK_COL] = subdf[thickness_col].map(thick_tags_d)
+        else:
+            # New behaviour: must be numeric
+            if not np.issubdtype(subdf[thickness_col].dtype, np.number):
+                raise Exception(
+                    "thickness_col must be numeric when not using 'thick_cds'."
+                )
+            subdf[THICK_COL] = subdf[thickness_col]
+
     else:
         subdf[THICK_COL] = [feat_dict["exon_height"]] * len(subdf)
 
@@ -418,7 +427,9 @@ def plot(
     elif isinstance(color_col, str):
         color_col = [color_col]
 
-    subdf = subdf_assigncolor(subdf, colormap, color_col, feat_dict["exon_border"])
+    subdf = subdf_assigncolor(
+        subdf, colormap, color_col, feat_dict["exon_border"], warnings
+    )
 
     # Create genes metadata DataFrame
     genesmd_df = get_genes_metadata(
@@ -455,11 +466,13 @@ def plot(
         elif isinstance(shrink_threshold, float):
             subdf[SHRTHRES_COL] = [shrink_threshold] * len(subdf)
             subdf = subdf.groupby(CHROM_COL, group_keys=False, observed=True).apply(
-                lambda x: compute_thresh(x, chrmd_df_grouped) if not x.empty else None
+                lambda x: compute_thresh(x, chrmd_df_grouped) if not x.empty else None,
+                include_groups=True,
             )
 
         subdf = subdf.groupby(CHROM_COL, group_keys=False, observed=True).apply(
-            lambda x: introns_resize(x, ts_data, ID_COL)  # if not x.empty else None
+            lambda x: introns_resize(x, ts_data, ID_COL),
+            include_groups=True,  # if not x.empty else None
         )  # empty rows when subset
         subdf[START_COL] = subdf[ADJSTART_COL]
         subdf[END_COL] = subdf[ADJEND_COL]
@@ -499,7 +512,8 @@ def plot(
     elif isinstance(text_pad, float):
         subdf[TEXT_PAD_COL] = [text_pad] * len(subdf)
         subdf = subdf.groupby(CHROM_COL, group_keys=False, observed=True).apply(
-            lambda x: compute_tpad(x, chrmd_df_grouped) if not x.empty else None
+            lambda x: compute_tpad(x, chrmd_df_grouped) if not x.empty else None,
+            include_groups=True,
         )
 
     # Deal with added plots
@@ -543,42 +557,44 @@ def plot(
     if tooltip is None:
         tooltip = "{__tooltip__}"
 
-    # deal with engine and call proper plot
-    if engine in ["plt", "matplotlib"]:
-        if not missing_plt_flag:
-            plot_exons_plt(
-                subdf=subdf,
-                depth_col=depth_col,
-                tot_ngenes_l=tot_ngenes_l,
-                feat_dict=feat_dict,
-                genesmd_df=genesmd_df,
-                chrmd_df=chrmd_df,
-                chrmd_df_grouped=chrmd_df_grouped,
-                ts_data=ts_data,
-                max_shown=max_shown,
-                id_col=ID_COL,
-                transcript_str=thick_cds,
-                tooltip=tooltip,
-                legend=legend,
-                y_labels=y_labels,
-                text=text,
-                title_chr=title_chr,
-                packed=packed,
-                to_file=to_file,
-                file_size=file_size,
-                warnings=warnings,
-                tick_pos_d=tick_pos_d,
-                ori_tick_pos_d=ori_tick_pos_d,
-            )
+    if return_plot is not None:
+        # deal with engine and call proper plot
+        if engine in ["plt", "matplotlib"]:
+            if not missing_plt_flag:
+                return plot_exons_plt(
+                    subdf=subdf,
+                    depth_col=depth_col,
+                    tot_ngenes_l=tot_ngenes_l,
+                    feat_dict=feat_dict,
+                    genesmd_df=genesmd_df,
+                    chrmd_df=chrmd_df,
+                    chrmd_df_grouped=chrmd_df_grouped,
+                    ts_data=ts_data,
+                    max_shown=max_shown,
+                    id_col=ID_COL,
+                    transcript_str=thick_cds,
+                    tooltip=tooltip,
+                    legend=legend,
+                    return_plot=return_plot,
+                    add_aligned_plots=add_aligned_plots,
+                    y_labels=y_labels,
+                    text=text,
+                    title_chr=title_chr,
+                    packed=packed,
+                    to_file=to_file,
+                    file_size=file_size,
+                    warnings=warnings,
+                    tick_pos_d=tick_pos_d,
+                    ori_tick_pos_d=ori_tick_pos_d,
+                )
 
-        else:
-            raise Exception(
-                "Make sure to install matplotlib dependecies by running `pip install pyranges-plot[plt]`"
-            )
+            else:
+                raise Exception(
+                    "Make sure to install matplotlib dependecies by running `pip install pyranges-plot[plt]`"
+                )
 
-    elif engine in ["ply", "plotly"]:
-        if not missing_ply_flag:
-            if return_plot is not None:
+        elif engine in ["ply", "plotly"]:
+            if not missing_ply_flag:
                 return plot_exons_ply(
                     subdf=subdf,
                     depth_col=depth_col,
@@ -606,6 +622,47 @@ def plot(
                     subset_warn=subset_warn,
                 )
             else:
+                raise Exception(
+                    "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"
+                )
+
+        else:
+            raise Exception("Please define engine with set_engine().")
+    else:
+        if engine in ["plt", "matplotlib"]:
+            if not missing_plt_flag:
+                plot_exons_plt(
+                    subdf=subdf,
+                    depth_col=depth_col,
+                    tot_ngenes_l=tot_ngenes_l,
+                    feat_dict=feat_dict,
+                    genesmd_df=genesmd_df,
+                    chrmd_df=chrmd_df,
+                    chrmd_df_grouped=chrmd_df_grouped,
+                    ts_data=ts_data,
+                    max_shown=max_shown,
+                    id_col=ID_COL,
+                    transcript_str=thick_cds,
+                    tooltip=tooltip,
+                    legend=legend,
+                    return_plot=return_plot,
+                    add_aligned_plots=add_aligned_plots,
+                    y_labels=y_labels,
+                    text=text,
+                    title_chr=title_chr,
+                    packed=packed,
+                    to_file=to_file,
+                    file_size=file_size,
+                    warnings=warnings,
+                    tick_pos_d=tick_pos_d,
+                    ori_tick_pos_d=ori_tick_pos_d,
+                )
+            else:
+                raise Exception(
+                    "Make sure to install matplotlib dependecies by running `pip install pyranges-plot[plt]`"
+                )
+        elif engine in ["ply", "plotly"]:
+            if not missing_ply_flag:
                 plot_exons_ply(
                     subdf=subdf,
                     depth_col=depth_col,
@@ -632,10 +689,9 @@ def plot(
                     ori_tick_pos_d=ori_tick_pos_d,
                     subset_warn=subset_warn,
                 )
+            else:
+                raise Exception(
+                    "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"
+                )
         else:
-            raise Exception(
-                "Make sure to install plotly dependecies by running `pip install pyranges-plot[plotly]`"
-            )
-
-    else:
-        raise Exception("Please define engine with set_engine().")
+            raise Exception("Please define engine with set_engine().")

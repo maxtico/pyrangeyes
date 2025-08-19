@@ -120,10 +120,10 @@ def introns_resize(df, ts_data, id_col):
     to_shrink[CUM_DELTA_COL] = to_shrink[DELTA_COL].cumsum()
 
     # store adjusted coord to plot shrunk intron regions
-    to_shrink[ADJSTART_COL] = to_shrink[
-        START_COL
-    ] - to_shrink.__cumdelta__.shift().fillna(0)
-    to_shrink[ADJEND_COL] = to_shrink[END_COL] - to_shrink.__cumdelta__
+    to_shrink[ADJSTART_COL] = to_shrink[START_COL] - to_shrink[
+        CUM_DELTA_COL
+    ].shift().fillna(0)
+    to_shrink[ADJEND_COL] = to_shrink[END_COL] - to_shrink[CUM_DELTA_COL]
 
     # store to shrink data
     ts_data[chrom] = to_shrink

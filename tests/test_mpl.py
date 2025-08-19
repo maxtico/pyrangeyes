@@ -2,6 +2,9 @@ import pyranges_plot as prp
 import pyranges as pr
 import pytest
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use("Agg")
 
 data1 = pr.PyRanges(
     {

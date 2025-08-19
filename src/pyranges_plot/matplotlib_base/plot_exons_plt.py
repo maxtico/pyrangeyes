@@ -28,6 +28,8 @@ def plot_exons_plt(
     transcript_str=False,
     tooltip=None,
     legend=False,
+    return_plot=None,
+    add_aligned_plots=None,
     y_labels=False,
     text=True,
     title_chr=None,
@@ -105,6 +107,7 @@ def plot_exons_plt(
         shrunk_bkg,
         v_spacer,
         exon_height,
+        add_aligned_plots,
     )
 
     # Plot genes
@@ -133,7 +136,8 @@ def plot_exons_plt(
             arrow_color,
             arrow_size,
             depth_col,
-        )
+        ),
+        include_groups=True,
     )
 
     # Prevent zoom in y axis
@@ -154,7 +158,12 @@ def plot_exons_plt(
                 plt_popup_warning(
                     "The provided data contains more genes than the ones plotted."
                 )
-        plt.show()
+        if return_plot is None:
+            plt.show()
+        elif return_plot == "fig":
+            return fig
+        else:
+            raise Exception("Matplotlib can not return a Dash app.")
     else:
         plt.savefig(to_file, format=to_file[-3:], dpi=400)
 
