@@ -58,6 +58,3 @@ since the graphical dependencies are not installed.
 ## Documentation
 Pyranges Plot documentation and tutorial can be found at https://pyranges-plot.readthedocs.io/.
 
-
-## Coming soon
-* Bases will be displayed along coordinates.
