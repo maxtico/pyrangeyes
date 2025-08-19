@@ -343,6 +343,7 @@ test_cases = [
             color_col="depth",
             depth_col="depth",
             tooltip="{depth}",
+            theme="pastel",
             return_plot="fig",
         ),
     ),

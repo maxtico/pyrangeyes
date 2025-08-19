@@ -220,8 +220,8 @@ def subdf_assigncolor(subdf, colormap, color_col, exon_border, warnings):
         #         rgb[rgb.find("(") + 1 : rgb.find(")")].split(",") for rgb in colormap
         #     ]
         #     colormap = [
-        #         "#{:02x}{:02x}{:02x}".format(int(r), int(g), int(b))
-        #         for r, g, b in numb_list
+        #         "#{:02x}{:02x}{:02x}".format(int(r), int(r), int(b))
+        #         for r, r, b in numb_list
         #     ]
         # create dict of colors
         colormap = {
