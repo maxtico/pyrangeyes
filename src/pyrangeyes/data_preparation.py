@@ -2,6 +2,7 @@ import numpy as np
 from intervaltree import IntervalTree
 import pyranges as pr
 from pyranges.core.names import CHROM_COL, START_COL, END_COL
+import pandas as pd
 
 # Check for matplotlib
 try:
@@ -255,7 +256,9 @@ def subdf_assigncolor(subdf, colormap, color_col, exon_border, warnings):
     return subdf
 
 
-def get_genes_metadata(df, id_col, color_col, packed, exon_height, v_spacer):
+def get_genes_metadata(
+    df, id_col, color_col, packed, exon_height, v_spacer, order, sort
+):
     """Create genes metadata df."""
 
     # Start df with chromosome and the column defining color
@@ -291,8 +294,48 @@ def get_genes_metadata(df, id_col, color_col, packed, exon_height, v_spacer):
     genesmd_df["chrix"] = genesmd_df.groupby(
         CHROM_COL, group_keys=False, observed=True
     ).ngroup()
-    # Sort by pr_ix and chromosome
-    genesmd_df.sort_values(by=[PR_INDEX_COL, "chrix"], inplace=True)
+
+    # Sort by pr_ix and chromosome / If user wants to sort the df
+    if sort:
+        genesmd_df.sort_values(by=[PR_INDEX_COL, "chrix"], inplace=True)
+
+    else:
+        # genesmd_df.sort_values(by=[PR_INDEX_COL,chrix], inplace=True)
+        order = order[::-1]
+
+        # Case 1: only one id_col
+        if len(id_col) == 1:
+            idx_s = pd.IndexSlice
+            genesmd_df = genesmd_df.loc[idx_s[:, :, order], :]
+
+        else:
+            # Nom dels nivells que volem matxar
+            id_levels = id_col  # ["transcript_id", "second_id"]
+
+            # Cream un diccionari mapping per l'ordre
+            order_map = {v: i for i, v in enumerate(order)}
+
+            # Seleccionem només les files   que coincideixen amb order
+            mask = (
+                genesmd_df.index.get_level_values(id_levels[0]).map(str)
+                + "_"
+                + genesmd_df.index.get_level_values(id_levels[1]).map(str)
+            )
+
+            # Fem una columna temporal amb els tuples
+            temp_tuples = list(
+                zip(
+                    genesmd_df.index.get_level_values(id_levels[0]),
+                    genesmd_df.index.get_level_values(id_levels[1]),
+                )
+            )
+
+            # Assignem un rank segons l'ordre
+            rank = [order_map.get(t, len(order)) for t in temp_tuples]
+
+            # Reordenem
+            genesmd_df = genesmd_df.iloc[np.argsort(rank)]
+
     genesmd_df["gene_ix_xchrom"] = genesmd_df.groupby(
         ["chrix", PR_INDEX_COL], group_keys=False, observed=True
     ).cumcount()
